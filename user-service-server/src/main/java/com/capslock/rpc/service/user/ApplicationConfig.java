@@ -1,5 +1,7 @@
 package com.capslock.rpc.service.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.weibo.api.motan.config.springsupport.AnnotationBean;
@@ -59,6 +61,11 @@ public class ApplicationConfig {
         config.setApplication(group);
         config.setRegistry("registryConfig");
         return config;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper().registerModule(new Jdk8Module());
     }
 
 }
