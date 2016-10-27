@@ -13,6 +13,15 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.capslock</groupId>
+            <artifactId>seq-service-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     <modules>
         <module>user-service-api</module>
         <module>user-service-server</module>

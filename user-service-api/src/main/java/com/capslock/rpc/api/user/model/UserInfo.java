@@ -13,4 +13,5 @@ public class UserInfo {
     private final MobileNumber mobileNumber;
     private Optional<String> nickname = Optional.empty();
     private Optional<String> avatar = Optional.empty();
+    private boolean inBlackList;
 }

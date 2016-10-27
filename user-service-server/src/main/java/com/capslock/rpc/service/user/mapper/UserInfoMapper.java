@@ -27,13 +27,4 @@ public class UserInfoMapper {
         final String data = versionedUserDataMapper.find(USER_INFO_TABLE_NAME, userId);
         return objectMapper.readValue(data, UserInfoCacheData.class);
     }
-
-    public UserInfoCacheData fetchUserInfo(final long userId, final long version) throws IOException {
-        final String data = versionedUserDataMapper.findByVersion(USER_INFO_TABLE_NAME, userId, version);
-        return objectMapper.readValue(data, UserInfoCacheData.class);
-    }
-
-    public String fetchUserInfoRawData(final long userId, final long version) throws IOException {
-        return versionedUserDataMapper.findByVersion(USER_INFO_TABLE_NAME, userId, version);
-    }
 }

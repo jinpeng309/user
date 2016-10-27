@@ -6,6 +6,7 @@ import com.capslock.rpc.api.user.model.User;
 import com.capslock.rpc.api.user.model.UserInfo;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by alvin.
@@ -17,7 +18,11 @@ public interface UserService {
 
     boolean isUserExists(final MobileNumber mobileNumber);
 
-    UserInfo fetchUserInfo(final long userId) throws IOException;
+    UserInfo fetchUserInfo(final long ownerUid, final long userId) throws IOException;
 
-    String fetchUserInfoPatch(final long userId, final long oldVersion, final long targetVersion) throws IOException;
+    void addUserIntoBlacklist(final long ownerUid, final long userId) throws IOException;
+
+    List<Long> fetchUserBlacklist(final long ownerUid);
+
+    void removeUserInBlacklist(final long ownerUid, final long userId);
 }

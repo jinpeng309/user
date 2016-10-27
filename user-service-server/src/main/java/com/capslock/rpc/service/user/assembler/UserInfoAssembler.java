@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoAssembler {
 
-    public UserInfo assemble(final UserInfoCacheData cacheData, final User user) {
+    public UserInfo assemble(final UserInfoCacheData cacheData, final User user, final boolean isInBlacklist) {
         final MobileNumber mobileNumber = new MobileNumber(user.getCountryCode(), user.getPhoneNumber());
         final UserInfo userInfo = new UserInfo(cacheData.getUserId(), mobileNumber);
         userInfo.setAvatar(cacheData.getAvatar());
         userInfo.setNickname(cacheData.getNickname());
+        userInfo.setInBlackList(isInBlacklist);
         return userInfo;
     }
 }
