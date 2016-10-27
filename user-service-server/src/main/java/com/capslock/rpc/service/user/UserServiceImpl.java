@@ -21,6 +21,7 @@ import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,12 @@ public class UserServiceImpl implements UserService {
     private UserInfoDeltaMapper userInfoDeltaMapper;
     @MotanReferer(basicReferer = "basicConfig", group = "seq-service-rpc")
     private SeqGeneratorService seqGeneratorService;
+
+    @PostConstruct
+    public void foo(){
+        SeqGeneratorService.Result result = seqGeneratorService.generateSeq(1, 0);
+        System.out.println(result);
+    }
 
     @Override
     public void addUser(final User user, final RegisterInfo registerInfo) throws IOException {

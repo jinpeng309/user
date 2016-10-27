@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by capslock1874.
  */
 @Configuration
-public class ApplicationConfig {
+public class RpcServerConfig {
     private final Config config = ConfigFactory.load();
 
     @Bean
