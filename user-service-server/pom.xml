@@ -56,6 +56,11 @@
             <artifactId>zjsonpatch</artifactId>
             <version>0.2.4</version>
         </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>1.2.1</version>
+        </dependency>
 
         <dependency>
             <groupId>com.capslock.rpc</groupId>

@@ -25,11 +25,11 @@ public interface UserMapper {
             @Result(property = "refreshToken", column = "refresh_token"),
             @Result(property = "avatar", column = "avatar")
     })
-    User findByUserId(@Param("userId") final long userId);
+    User fetchUserById(@Param("userId") final long userId);
 
     @Select("select * from user where country_code = #{countryCode} and phone_number = #{phoneNumber}")
     @ResultMap("User")
-    User findByPhoneNumber(@Param("countryCode") final int countryCode, @Param("phoneNumber") final long phoneNumber);
+    User fetchUserByPhoneNumber(@Param("countryCode") final int countryCode, @Param("phoneNumber") final long phoneNumber);
 
     @Insert({"insert into user ",
             "(country_code, phone_number, avatar, token, refresh_token) ",
