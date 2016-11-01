@@ -2,19 +2,24 @@ package com.capslock.rpc.service.user;
 
 import com.capslock.rpc.api.seq.SeqGeneratorService;
 import com.capslock.rpc.api.user.UserService;
+import com.capslock.rpc.api.user.model.Contact;
 import com.capslock.rpc.api.user.model.MobileNumber;
 import com.capslock.rpc.api.user.model.RegisterInfo;
 import com.capslock.rpc.api.user.model.User;
 import com.capslock.rpc.api.user.model.UserInfo;
 import com.capslock.rpc.service.user.assembler.UserInfoAssembler;
+import com.capslock.rpc.service.user.extractor.ContactCacheDataExtractor;
 import com.capslock.rpc.service.user.factory.UserInfoCacheDataFactory;
 import com.capslock.rpc.service.user.fetcher.UserBlacklistFetcher;
+import com.capslock.rpc.service.user.fetcher.UserContactFetcher;
 import com.capslock.rpc.service.user.fetcher.UserFetcher;
 import com.capslock.rpc.service.user.fetcher.UserInfoFetcher;
 import com.capslock.rpc.service.user.mapper.UserInfoDeltaMapper;
+import com.capslock.rpc.service.user.mapper.model.ContactCacheData;
 import com.capslock.rpc.service.user.mapper.model.UserInfoCacheData;
 import com.capslock.rpc.service.user.updater.RegisterInfoUpdater;
 import com.capslock.rpc.service.user.updater.UserBlacklistUpdater;
+import com.capslock.rpc.service.user.updater.UserContactUpdater;
 import com.capslock.rpc.service.user.updater.UserInfoUpdater;
 import com.capslock.rpc.service.user.updater.UserUpdater;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +33,7 @@ import rx.Observable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by alvin.
@@ -59,6 +65,12 @@ public class UserServiceImpl implements UserService {
     private RegisterInfoUpdater registerInfoUpdater;
     @Autowired
     private UserInfoAssembler userInfoAssembler;
+    @Autowired
+    private UserContactUpdater userContactUpdater;
+    @Autowired
+    private UserContactFetcher userContactFetcher;
+    @Autowired
+    private ContactCacheDataExtractor contactCacheDataExtractor;
 
     @Override
     public void addUser(final User user, final RegisterInfo registerInfo) throws IOException {
@@ -71,17 +83,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User fetchUser(final MobileNumber mobileNumber) {
-        return userFetcher.fetchUserByPhoneNumber(mobileNumber.getCountryCode(), mobileNumber.getPhoneNumber());
+        return userFetcher.fetchUser(mobileNumber.getCountryCode(), mobileNumber.getPhoneNumber());
     }
 
     @Override
     public boolean isUserExists(final MobileNumber mobileNumber) {
-        return userFetcher.fetchUserByPhoneNumber(mobileNumber.getCountryCode(), mobileNumber.getPhoneNumber()) != null;
+        return userFetcher.fetchUser(mobileNumber.getCountryCode(), mobileNumber.getPhoneNumber()) != null;
     }
 
     @Override
     public UserInfo fetchUserInfo(final long ownerUid, final long userId) throws IOException {
         return userInfoFetcher.fetchUserInfo(ownerUid, userId);
+    }
+
+    @Override
+    public List<UserInfo> fetchUserInfoList(final long ownerUid, final List<Long> userIds) {
+        return userInfoFetcher.fetchUserInfoList(ownerUid, userIds);
     }
 
     @Override
@@ -102,6 +119,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUserInBlacklist(final long ownerUid, final long userId) {
         userBlacklistUpdater.removeUserInBlacklistAsync(ownerUid, userId).toBlocking().single();
+    }
+
+    @Override
+    public void addContacts(final long ownerUid, final List<Contact> contacts) {
+        userContactUpdater.addContacts(ownerUid, contactCacheDataExtractor.extract(contacts));
+    }
+
+    @Override
+    public List<User> fetchAppContacts(final long ownerUid) {
+        userContactFetcher
+                .fetchUserContactsAsync(ownerUid)
+                .flatMap(contactCacheDataList -> {
+                            return userFetcher
+                                    .fetchUsersByEncryptedPhoneNumberAsync(contactCacheDataList
+                                            .stream()
+                                            .map(ContactCacheData::getEncryptedPhoneNumber)
+                                            .collect(Collectors.toList()));
+                        }
+                );
+        return null;
     }
 
     public static void main(String[] args) throws IOException {

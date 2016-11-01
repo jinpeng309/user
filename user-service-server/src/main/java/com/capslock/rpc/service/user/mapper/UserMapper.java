@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * Created by capslock.
  */
@@ -37,4 +39,6 @@ public interface UserMapper {
             "(#{countryCode}, #{phoneNumber}, #{avatar}, #{token}, #{refreshToken})"})
     @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "user_id")
     void addUser(final User user);
+
+    List<User> fetchUserByIds(List<Long> uids);
 }

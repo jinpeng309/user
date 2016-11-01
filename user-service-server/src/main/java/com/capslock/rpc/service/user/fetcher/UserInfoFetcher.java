@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rx.Observable;
 
-import static com.capslock.rpc.service.user.util.RxDecorator.toRx;
+import java.util.List;
 
 /**
  * Created by alvin.
@@ -25,7 +25,7 @@ public class UserInfoFetcher {
     private UserInfoAssembler userInfoAssembler;
 
     public Observable<UserInfo> fetchUserInfoAsync(final long ownerUid, final long userId) {
-        return userInfoAssembler.assemble(fetchUserInfoCacheDataAsync(userId), userFetcher.fetchUserByIdAsync(userId),
+        return userInfoAssembler.assemble(fetchUserInfoCacheDataAsync(userId), userFetcher.fetchUserAsync(userId),
                 userBlacklistFetcher.isInBlacklistAsync(ownerUid, userId));
     }
 
@@ -34,6 +34,19 @@ public class UserInfoFetcher {
     }
 
     public Observable<UserInfoCacheData> fetchUserInfoCacheDataAsync(final long userId) {
-        return  Observable.fromCallable(() -> userInfoMapper.fetchUserInfo(userId));
+        return Observable.fromCallable(() -> userInfoMapper.fetchUserInfo(userId));
+    }
+
+    public Observable<List<UserInfoCacheData>> fetchUserInfoCacheDataListAsync(final List<Long> userIds) {
+        return Observable.fromCallable(() -> userInfoMapper.fetchUserInfoList(userIds));
+    }
+
+    public List<UserInfo> fetchUserInfoList(final long ownerUid, final List<Long> userIds) {
+        return fetchUserInfoListAsync(ownerUid, userIds).toBlocking().single();
+    }
+
+    public Observable<List<UserInfo>> fetchUserInfoListAsync(final long ownerUid, final List<Long> userIds) {
+        return userInfoAssembler.assembleUserInfoList(fetchUserInfoCacheDataListAsync(userIds),
+                userFetcher.fetchUsersByUidListAsync(userIds), userBlacklistFetcher.fetchUserBlacklistAsync(ownerUid));
     }
 }

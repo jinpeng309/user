@@ -2,10 +2,12 @@ package com.capslock.rpc.service.user.mapper;
 
 import com.capslock.rpc.service.user.mapper.model.UserInfoCacheData;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by alvin.
@@ -26,5 +28,10 @@ public class UserInfoMapper {
     public UserInfoCacheData fetchUserInfo(final long userId) throws IOException {
         final String data = versionedUserDataMapper.find(USER_INFO_TABLE_NAME, userId);
         return objectMapper.readValue(data, UserInfoCacheData.class);
+    }
+
+    public List<UserInfoCacheData> fetchUserInfoList(final List<Long> userIds) {
+        return Lists.newArrayList();
+
     }
 }
