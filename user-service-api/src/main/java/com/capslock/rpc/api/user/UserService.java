@@ -31,5 +31,5 @@ public interface UserService {
 
     void addContacts(final long ownerUid, final List<Contact> contacts);
 
-    List<User> fetchAppContacts(final long ownerUid);
+    List<UserInfo> fetchAppContacts(final long ownerUid);
 }

@@ -57,4 +57,8 @@ public class UserFetcher {
     public Observable<List<User>> fetchUsersByEncryptedPhoneNumberAsync(final List<String> encryptedPhoneNumbers) {
         return Observable.fromCallable(() -> fetchUsersByEncryptedPhoneNumber(encryptedPhoneNumbers));
     }
+
+    public Observable<List<Long>> fetchUserIdsByEncryptedPhoneNumberAsync(final List<String> strings) {
+        return null;
+    }
 }

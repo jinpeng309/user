@@ -104,11 +104,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUserIntoBlacklist(final long ownerUid, final long userId) throws IOException {
         userBlacklistUpdater.addUserIntoBlacklist(ownerUid, userId);
-        userInfoFetcher.fetchUserInfoAsync(ownerUid, userId);
-//        final String data = objectMapper.writeValueAsString(userInfo);
-//        final SeqGeneratorService.Result result = seqGeneratorService.generateSeq(userId, 1);
-//        final long seq = result.getSequence();
-//        userInfoDeltaMapper.addDelta(ownerUid, data, seq);
     }
 
     @Override
@@ -127,18 +122,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> fetchAppContacts(final long ownerUid) {
-        userContactFetcher
+    public List<UserInfo> fetchAppContacts(final long ownerUid) {
+        return userContactFetcher
                 .fetchUserContactsAsync(ownerUid)
-                .flatMap(contactCacheDataList -> {
-                            return userFetcher
-                                    .fetchUsersByEncryptedPhoneNumberAsync(contactCacheDataList
-                                            .stream()
-                                            .map(ContactCacheData::getEncryptedPhoneNumber)
-                                            .collect(Collectors.toList()));
-                        }
-                );
-        return null;
+                .flatMap(dataList -> userFetcher.fetchUserIdsByEncryptedPhoneNumberAsync(extractEncryptedPhoneNumber(dataList)))
+                .map(userList -> fetchUserInfoList(ownerUid, userList))
+                .toBlocking()
+                .single();
+    }
+
+    private List<String> extractEncryptedPhoneNumber(final List<ContactCacheData> contactCacheDataList) {
+        return contactCacheDataList.stream()
+                .map(ContactCacheData::getEncryptedPhoneNumber)
+                .collect(Collectors.toList());
     }
 
     public static void main(String[] args) throws IOException {
