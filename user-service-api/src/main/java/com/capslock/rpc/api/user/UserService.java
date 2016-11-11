@@ -1,5 +1,6 @@
 package com.capslock.rpc.api.user;
 
+import com.capslock.rpc.api.user.model.BlackItem;
 import com.capslock.rpc.api.user.model.Contact;
 import com.capslock.rpc.api.user.model.MobileNumber;
 import com.capslock.rpc.api.user.model.RegisterInfo;
@@ -25,11 +26,17 @@ public interface UserService {
 
     void addUserIntoBlacklist(final long ownerUid, final long userId) throws IOException;
 
-    List<Long> fetchUserBlacklist(final long ownerUid);
+    void addUserIntoBlacklist(final long ownerUid, final List<Long> userIdList);
+
+    List<BlackItem> fetchUserBlacklist(final long ownerUid);
 
     void removeUserInBlacklist(final long ownerUid, final long userId);
+
+    void removeUserInBlacklist(final long ownerUid, final List<Long> userIdList);
 
     void addContacts(final long ownerUid, final List<Contact> contacts);
 
     List<UserInfo> fetchAppContacts(final long ownerUid);
+
+    String fetchChangedUserInfoData(final long ownerUid, final long beginSequenceId);
 }

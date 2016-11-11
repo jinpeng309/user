@@ -3,7 +3,7 @@ package com.capslock.rpc.service.user.assembler;
 import com.capslock.rpc.api.user.model.MobileNumber;
 import com.capslock.rpc.api.user.model.User;
 import com.capslock.rpc.api.user.model.UserInfo;
-import com.capslock.rpc.service.user.mapper.model.UserInfoCacheData;
+import com.capslock.rpc.service.user.repository.mapper.model.UserInfoCacheData;
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Component;
 import rx.Observable;

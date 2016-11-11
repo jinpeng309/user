@@ -1,7 +1,7 @@
 package com.capslock.rpc.service.user.extractor;
 
 import com.capslock.rpc.api.user.model.Contact;
-import com.capslock.rpc.service.user.mapper.model.ContactCacheData;
+import com.capslock.rpc.service.user.repository.mapper.model.ContactCacheData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
