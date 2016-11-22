@@ -2,7 +2,7 @@ package com.capslock.rpc.service.user.sender;
 
 import com.capslock.commons.model.ClientInfo;
 import com.capslock.commons.mq.MessageQueuePublisher;
-import com.capslock.commons.packet.EnvelopePacket;
+import com.capslock.commons.packet.EnvelopeClusterPacket;
 import com.capslock.commons.packet.EnvelopePacketType;
 import com.capslock.commons.packet.protocol.ChangedDataNotificationProtocol;
 import com.capslock.commons.packet.socketOutboundPacket.SocketOutboundChangedDataNotification;
@@ -32,18 +32,18 @@ public class MessageSender {
         final SocketOutboundChangedDataNotification notification =
                 new SocketOutboundChangedDataNotification(sequence, type.getValue());
         final ClientInfo clientInfo = new ClientInfo(userId);
-        final EnvelopePacket envelopePacket = new EnvelopePacket(clientInfo, notification, EnvelopePacketType.S2C);
+        final EnvelopeClusterPacket envelopeClusterPacket = new EnvelopeClusterPacket(clientInfo, notification, EnvelopePacketType.S2C);
         try {
-            messageQueuePublisher.publish(objectMapper.writeValueAsBytes(envelopePacket));
+            messageQueuePublisher.publish(objectMapper.writeValueAsBytes(envelopeClusterPacket));
         } catch (IOException e) {
-            retryEntryQueue.offer(new RetryEntry(envelopePacket));
+            retryEntryQueue.offer(new RetryEntry(envelopeClusterPacket));
             e.printStackTrace();
         }
     }
 
     @Data
     public static class RetryEntry {
-        private final EnvelopePacket envelopePacket;
+        private final EnvelopeClusterPacket envelopeClusterPacket;
         private int times = 0;
 
         public void addTimes() {
@@ -62,7 +62,7 @@ public class MessageSender {
             while (true) {
                 try {
                     retryEntry = retryEntryQueue.take();
-                    final EnvelopePacket packet = retryEntry.getEnvelopePacket();
+                    final EnvelopeClusterPacket packet = retryEntry.getEnvelopeClusterPacket();
                     try {
                         messageQueuePublisher.publish(objectMapper.writeValueAsBytes(packet));
                     } catch (IOException e) {
