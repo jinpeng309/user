@@ -2,8 +2,8 @@ package com.capslock.rpc.service.user.sender;
 
 import com.capslock.commons.model.ClientInfo;
 import com.capslock.commons.mq.MessageQueuePublisher;
-import com.capslock.commons.packet.EnvelopeClusterPacket;
-import com.capslock.commons.packet.EnvelopePacketType;
+import com.capslock.commons.packet.cluster.EnvelopeClusterPacket;
+import com.capslock.commons.packet.cluster.EnvelopePacketType;
 import com.capslock.commons.packet.protocol.ChangedDataNotificationProtocol;
 import com.capslock.commons.packet.socketOutboundPacket.SocketOutboundChangedDataNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
